@@ -1,0 +1,46 @@
+#Requires AutoHotkey v2.0
+
+#Include GuiState.ahk 
+iniFile := "Settings.ini"
+
+; ===== SAMPLE GUI CONTROLS =====
+
+myGui := Gui()
+myGUi.Title := "GuiState"
+myGUi.Name := "GuiState"
+MyGui.OnEvent("Close", Gui_Close)
+
+; ----- EDIT ------
+myGui.Add("Text", "xm", "Enter Name:")
+txtName := myGui.Add("Edit", "x+m w200 vName")
+
+; ----- CHECKBOX ------
+chkRemember := myGui.Add("Checkbox", "xm vRemember", "Remember Me")
+
+; ----- RADIO ------
+myGui.Add("Text", "xm", "Select Gender:")
+radioMale := myGui.Add("Radio", "xm vGender", "Male")
+radioFemale := myGui.Add("Radio", "x+m vFemale", "Female")
+
+myGui.Add("Text", "xm", "Choose Option:")
+
+; ----- DROPDOWN ------
+ddlOptions := myGui.Add("DropDownList", "xm vOptions", ["Option 1", "Option 2", "Option 3"])
+
+; ----- LISTBOX ------
+myGui.Add("Text", "xm", "Select Items:")
+lstItems := myGui.Add("ListBox", "xm w200 h80 vItems", ["Item 1", "Item 2", "Item 3", "Item 4"])
+
+btnClose := myGui.Add("Button", "xm", "Close")
+btnClose.OnEvent("Click", Gui_Close)
+
+myGui.Show()
+
+GuiLoadState(MyGUI.Title,iniFile)
+
+; ===== FUNCTIONS =====
+
+Gui_Close(*){
+    GuiSaveState(myGui.Title, iniFile)                
+    ExitApp()
+}
