@@ -139,5 +139,3 @@ GuiLoadState(guiName="",inifile="", Preset=1)
     Gui, Show,x%winx% y%winy%,%guiName%
 }
 
-
-    

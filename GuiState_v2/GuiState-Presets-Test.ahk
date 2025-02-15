@@ -57,16 +57,8 @@ btnSave.OnEvent("Click", SavePreset)
 btnDelete := myGui.Add("Button", "xm", "Delete Preset")
 btnDelete.OnEvent("Click", DeletePreset)
 
-
-    myGui.Show
-
-    
-; ----- Presets Save/Load/Delete ------
-; if (items.length >1)
-;     ddlPresets.Choose(2)    ; Select first preset
-; else
-    ddlPresets.Choose(1)    ; Select NEW preset
-LoadPreset()
+ddlPresets.Choose(1)    ; Select NEW preset
+myGui.Show
 
 ; ===== FUNCTIONS =====
 
@@ -80,15 +72,22 @@ SavePreset(*) {
     preset := ddlPresets.Text
     if (preset = "NEW") {
         preset := InputBox("Enter new preset name:", "New Preset").value
-        if (!preset) {
+        if (!preset) 
+            return
+
+        Items := ControlGetItems(ddlPresets)
+
+        if (HasVal(Items,preset)) {
+            MsgBox "Preset already exists!"
             return
         }
-        Items := ControlGetItems(ddlPresets)
-        Items.push(preset) 
+
+        Items.Push(preset)
         ddlPresets.Delete
         ddlPresets.Add(Items)
         ddlPresets.Choose(Items.Length) ; Select new preset
     }
+
     GuiSaveState(myGui.Title, iniFile, preset)
 }
 
@@ -96,10 +95,9 @@ LoadPreset(*) {
     preset := ddlPresets.Text
     if (preset != "NEW") 
         GuiLoadState(myGui.Title, iniFile, preset)
-    else
-        GuiResetState(myGui.Title)
+    ; else
+        ;GuiResetState(myGui.Title)
 }
-
 
 DeletePreset(*) {
     preset := ddlPresets.Text
@@ -115,3 +113,16 @@ DeletePreset(*) {
     else
         ddlPresets.Choose(1)
 }
+
+;;;; Automatically assign names if they don't have one
+;
+; AssignControlNames(*) {
+;     index := 1
+;     for ctrl in myGUI {
+;         if (ctrl.name = "") 
+;;;	  	if (ctrl.type = "CheckBox") || (ctrl.type = "Edit") { 		; etc...
+;             		ctrl.Name := ctrl.type "_" index "_" StrReplace(ctrl.Text," ","-") ; Fallback if no text is present
+;         		index++
+;;;		}
+;     }
+; }

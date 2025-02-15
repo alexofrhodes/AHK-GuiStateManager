@@ -44,3 +44,16 @@ Gui_Close(*){
     GuiSaveState(myGui.Title, iniFile)                
     ExitApp()
 }
+
+;;;; Automatically assign names if they don't have one
+;
+; AssignControlNames(*) {
+;     index := 1
+;     for ctrl in myGUI {
+;         if (ctrl.name = "") 
+;;;	  	if (ctrl.type = "CheckBox") || (ctrl.type = "Edit") { 		; etc...
+;             		ctrl.Name := ctrl.type "_" index "_" StrReplace(ctrl.Text," ","-") ; Fallback if no text is present
+;         		index++
+;;;		}
+;     }
+; }
