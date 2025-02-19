@@ -1,7 +1,7 @@
 #Requires AutoHotkey v2.0
 
 #Include GuiState.ahk 
-iniFile := "Settings.ini"
+global iniFIle := "GuiState.ini"
 
 ; ----- GUI ------
 
@@ -64,7 +64,9 @@ lstItems := myGui.Add("ListBox", "xm w200 h80 vItems", ["Item 1", "Item 2", "Ite
 btnClose := myGui.Add("Button", "xm", "Close")
 btnClose.OnEvent("Click", Gui_Close)
 
-myGui.Show
+global guiManager := GuiState(myGui, "GuiState.ini", 1)
+myGui.Show("AutoSize x5000 w5000")
+guiManager.LoadState()
 
 ; ===== FUNCTIONS =====
 
@@ -94,13 +96,16 @@ SavePreset(*) {
         ddlPresets.Choose(Items.Length) ; Select new preset
     }
 
-    GuiSaveState(myGui.Title, iniFile, preset)
+    guiManager := GuiState(myGui, "GuiState.ini", preset)
+    guiManager.SaveState()
 }
 
 LoadPreset(*) {
     preset := ddlPresets.Text
-    if (preset != "NEW") 
-        GuiLoadState(myGui.Title, iniFile, preset)
+    if (preset != "NEW") {
+        guiManager := GuiState(myGui, iniFile, preset)
+        guiManager.LoadState()
+    }
     ; else
         ;GuiResetState(myGui.Title)
 }
@@ -110,7 +115,8 @@ DeletePreset(*) {
     if (preset = "NEW") {
         return
     }
-    GuiDeleteState(myGui.Title, iniFile preset)
+    guiManager := GuiState(myGui, iniFIle, preset)
+    guiManager.DeleteState()
  
     previous:= ddlPresets.Value
     ddlPresets.Delete(ddlPresets.Value)
@@ -118,6 +124,15 @@ DeletePreset(*) {
         ddlPresets.Choose(previous-1)
     else
         ddlPresets.Choose(1)
+}
+
+HasVal(haystack, needle) {
+	if !(IsObject(haystack)) || (haystack.Length = 0)
+		return 0
+	for index, value in haystack
+		if (value = needle)
+			return index
+	return 0
 }
 
 ;;;; Automatically assign names if they don't have one

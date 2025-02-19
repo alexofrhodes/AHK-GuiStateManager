@@ -1,13 +1,11 @@
 #Requires AutoHotkey v2.0
 
 #Include GuiState.ahk 
-iniFile := "Settings.ini"
 
 ; ===== SAMPLE GUI CONTROLS =====
 
 myGui := Gui()
-myGUi.Title := "GuiState"
-myGUi.Name := "GuiState"
+
 MyGui.OnEvent("Close", Gui_Close)
 
 ; ----- EDIT ------
@@ -34,14 +32,15 @@ lstItems := myGui.Add("ListBox", "xm w200 h80 vItems", ["Item 1", "Item 2", "Ite
 btnClose := myGui.Add("Button", "xm", "Close")
 btnClose.OnEvent("Click", Gui_Close)
 
-myGui.Show()
+global guiManager := GuiState(myGui, "GuiState.ini", 1)
+myGui.Show("AutoSize x5000 w5000")
 
-GuiLoadState(MyGUI.Title,iniFile)
+guiManager.LoadState()
 
 ; ===== FUNCTIONS =====
 
 Gui_Close(*){
-    GuiSaveState(myGui.Title, iniFile)                
+    guimanager.SaveState()                
     ExitApp()
 }
 
